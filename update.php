@@ -23,7 +23,15 @@ if (!empty($_GET["opcion"]) && $_GET["opcion"]=="borrar") {
         echo "registro no fue borrado";
     }
 }
-
+if (isset($_POST["nombre"]) && isset($_POST["apellidos"])) {
+    $actualizar="UPDATE datos SET nombre='$_POST[nombre]', apellidos='$_POST[apellidos]' WHERE id=$_POST[id]";
+    $resultado = mysqli_query($link,$actualizar);
+    if ($resultado) {
+        echo "<br> El registro se actualizó correctamente";
+    } else {
+        echo "<br> El registro no se cambió";
+    }
+}
 ?>
 <table>
     <tr>
@@ -47,5 +55,26 @@ if (!empty($_GET["opcion"]) && $_GET["opcion"]=="borrar") {
         }
     ?>
 </table>
+<?php
+if (isset($_GET["id"]) && $_GET["opcion"]=="actualizar") {
+    $consulta = "SELECT * FROM datos WHERE id=$_GET[id]";
+    $resultado = mysqli_query($link, $consulta);
+    //OJO -> Si el resultado es solo 1 registro, no se necesita un bucle para obtener el array. Si no, únicamente el Fetch asociativo = mysqli_fetch_array($array)
+
+    $row = mysqli_fetch_array($resultado); //$row["nombre"] -> Trae el nombre de la BBDD
+?>
+    <form action="" method="POST">
+        <input type="hidden" value="<?=$row['id']?>" name="id">
+        <label for="nombre">
+            <input name="nombre" type="text" placeholder="Nombre" value="<?=$row['nombre']?>">
+        </label>
+        <label for="apellido">
+            <input name="apellidos" type="text" placeholder="Apellido" value="<?=$row['apellidos']?>">
+        </label>
+        <input type="submit" value="Actualizar">
+    </form>
+<?php
+}
+?>
 </body>
 </html>
